@@ -10,19 +10,10 @@
 --                  EXISTS   ("01") – right letter, wrong position
 --                  WRONG    ("00") – letter not present in the secret word
 --
---               Two-pass algorithm:
---               Pass 1 – mark all exact-position matches.
---               Pass 2 – for unmatched positions, scan the entire secret for
---                         the guess letter (simplified Wordle rule; does not
---                         account for duplicate-letter consumption, which is
---                         acceptable for this implementation scope).
---
--- PORTS
---   secret_in   : 40-bit packed word, secret_in(7:0)  = letter 0 (leftmost)
---   guess_in    : 40-bit packed word, guess_in(7:0)   = letter 0 (leftmost)
---   feedback    : 10-bit result, feedback(1:0) = letter 0, (9:8) = letter 4
---   all_correct : '1' when every letter is CORRECT (win condition)
--- AUTHOR      : EEL480 Group
+--               Duplicate Letter Handling (Fully Implemented):
+--               Uses a 'consumed' array to track secret word letters.
+--               Pass 1 - mark all exact-position matches and consume them.
+--               Pass 2 - scan remaining guess letters against unconsumed secret letters.
 --------------------------------------------------------------------------------
 
 library ieee;
@@ -34,7 +25,7 @@ entity word_comparator is
         secret_in   : in  std_logic_vector(39 downto 0); -- 5 x 8-bit packed
         guess_in    : in  std_logic_vector(39 downto 0); -- 5 x 8-bit packed
         feedback    : out std_logic_vector(9  downto 0); -- 5 x 2-bit result
-        all_correct : out std_logic                       -- Win flag
+        all_correct : out std_logic                      -- Win flag
     );
 end entity word_comparator;
 
@@ -64,14 +55,18 @@ begin
     p_compare : process(s, g)
         variable corr : std_logic_vector(4 downto 0); -- exact-match flags
         variable exst : std_logic_vector(4 downto 0); -- exists-in-word flags
+        variable s_used : std_logic_vector (4 downto 0); -- consumed secret letters tracker
     begin
+        -- Initialise all variable to '0'
         corr := (others => '0');
         exst := (others => '0');
+        s_used := (others => '0');
 
         -- Pass 1 : detect correct-position matches
         for i in 0 to 4 loop
             if g(i) = s(i) then
                 corr(i) := '1';
+                s_used(i) := '1'; -- Consume this exact letter in the secret word
             end if;
         end loop;
 
@@ -79,8 +74,10 @@ begin
         for i in 0 to 4 loop
             if corr(i) = '0' then
                 for j in 0 to 4 loop
-                    if g(i) = s(j) then
+                    if g(i) = s(j) and s_used(j) = '0' then
                         exst(i) := '1';
+                        s_used(j) := '1';
+                        exit;
                     end if;
                 end loop;
             end if;
