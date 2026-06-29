@@ -1,7 +1,4 @@
 --------------------------------------------------------------------------------
--- FILE        : termo_top.vhd
--- PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
--- BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
 -- DESCRIPTION : Top-level structural entity.
 --               Instantiates and interconnects:
 --                  u_kb   – ps2_keyboard    (PS/2 ↔ ASCII)
@@ -9,8 +6,7 @@
 --                  u_cmp  – word_comparator (combinational feedback)
 --                  u_game – game_controller (game FSM + LCD write helper)
 --
---   External signal summary
---   ─────────────────────────────────────────────────────────────
+--   External signal summary:
 --   clk          : 50 MHz board oscillator
 --   rst          : Active-HIGH reset (mapped to BTN_SOUTH / BTN0)
 --   ps2_clk      : PS/2 keyboard clock  (open-collector, pulled up)
@@ -20,7 +16,6 @@
 --   led[0]       : Player-1 word entered
 --   led[1]       : Player-2 won
 --   led[2]       : Player-2 lost (max attempts)
--- AUTHOR      : EEL480 Group
 --------------------------------------------------------------------------------
 
 library ieee;

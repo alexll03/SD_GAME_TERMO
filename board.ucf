@@ -1,15 +1,3 @@
- 
-################################################################################
-# FILE        : board.ucf
-# PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
-# BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
-# DESCRIPTION : User Constraints File.
-#               Pin assignments are based on the Digilent Spartan-3AN Starter
-#               Kit Reference Manual (Doc. 502-139).
-#               IMPORTANT: Verify every location against YOUR board revision
-#               before programming.  The schematic is authoritative.
-################################################################################
-
 # ==============================================================================
 # CLOCK  –  50 MHz oscillator
 # ==============================================================================
@@ -18,19 +6,19 @@ NET "clk"   TNM_NET = "clk";
 TIMESPEC    TS_CLK = PERIOD "clk" 20 ns HIGH 50%;
 
 # ==============================================================================
-# RESET  –  Push-button BTN_SOUTH (active HIGH; board pull-down)
+# RESET  –  Push-button BTN_SOUTH
 # ==============================================================================
 NET "rst"   LOC = "T15"  | IOSTANDARD = LVCMOS33;
 
 # ==============================================================================
 # PS/2 KEYBOARD CONNECTOR
-# Both lines are open-collector and require on-board pull-ups.
+# Both lines are open-collector
 # ==============================================================================
 NET "ps2_clk"   LOC = "W12"  | IOSTANDARD = LVCMOS33 | PULLUP;
 NET "ps2_data"  LOC = "V11"  | IOSTANDARD = LVCMOS33 | PULLUP;
 
 # ==============================================================================
-# LCD – HD44780 in 4-bit mode
+# LCD – 4-bit
 # Control lines
 # ==============================================================================
 NET "lcd_rs"  LOC = "Y14" | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 4;

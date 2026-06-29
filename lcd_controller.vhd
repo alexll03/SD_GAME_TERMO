@@ -1,16 +1,11 @@
 --------------------------------------------------------------------------------
--- FILE        : lcd_controller.vhd
--- PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
--- BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
--- DESCRIPTION : HD44780-compatible 16x2 LCD controller in 4-bit interface mode.
+-- DESCRIPTION : LCD controller in 4-bit interface mode.
 --               Executes the full power-on initialisation sequence (3x 8-bit
 --               wake-up nibbles followed by the 4-bit switch and configuration
 --               commands), then accepts single-byte write requests from the
 --               game controller.  A byte is either a COMMAND (RS=0) or a
 --               DATA character (RS=1) and is sent in two 4-bit nibbles with
 --               compliant E-pulse timing.
--- CLK         : 50 MHz system clock  (1 clock = 20 ns)
--- AUTHOR      : EEL480 Group
 --------------------------------------------------------------------------------
 
 library ieee;
@@ -44,16 +39,16 @@ architecture rtl of lcd_controller is
     constant C_INIT_100US : natural :=   5_000;  -- 100 µs  after 2nd/3rd wake-up
     constant C_CLR_DELAY  : natural := 100_000;  -- ~2 ms   for Clear / Return-Home
     constant C_CMD_DELAY  : natural :=   2_500;  -- 50 µs   for all other commands
-    constant C_E_HIGH     : natural :=     100;  -- 500 ns  E pulse width (high)
-    constant C_E_LOW      : natural :=     100;  -- 500 ns  E low time (inter-nibble)
-    constant C_RS_SETUP   : natural :=      20;  -- 60 ns   RS/data setup before E↑
+    constant C_E_HIGH     : natural :=     100;  -- 1100 ns  E pulse width (high)
+    constant C_E_LOW      : natural :=     100;  -- 100 ns  E low time (inter-nibble)
+    constant C_RS_SETUP   : natural :=      20;  -- 20 ns   RS/data setup before E↑
 
     ---------------------------------------------------------------------------
     -- State-machine type
     ---------------------------------------------------------------------------
     type lcd_state_t is (
         -- Power-on / initialisation states
-        ST_PWR_DELAY,                                       -- Wait 15 ms
+        ST_PWR_DELAY, -- Wait 15 ms
         -- Three 8-bit wake-up nibbles (only high nibble 0x3 is sent)
         ST_WU1_SETUP, ST_WU1_EHI, ST_WU1_ELO, ST_WU1_WAIT,
         ST_WU2_SETUP, ST_WU2_EHI, ST_WU2_ELO, ST_WU2_WAIT,

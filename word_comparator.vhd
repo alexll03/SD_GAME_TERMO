@@ -1,8 +1,5 @@
  
 --------------------------------------------------------------------------------
--- FILE        : word_comparator.vhd
--- PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
--- BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
 -- DESCRIPTION : Purely combinational 5-letter word comparator.
 --               Given a secret word and a player guess (each 5 ASCII bytes),
 --               it classifies every guess letter as:

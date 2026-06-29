@@ -1,13 +1,8 @@
 --------------------------------------------------------------------------------
--- FILE        : ps2_keyboard.vhd
--- PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
--- BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
 -- DESCRIPTION : PS/2 keyboard interface.
 --               Decodes the 11-bit PS/2 serial frame (start, 8 data, parity,
 --               stop), filters out break codes (F0 prefix), and converts
 --               Set-2 scan codes to 8-bit ASCII.
--- CLK         : 50 MHz system clock
--- AUTHOR      : EEL480 Group
 --------------------------------------------------------------------------------
 
 library ieee;

@@ -1,8 +1,5 @@
 --------------------------------------------------------------------------------
--- FILE        : game_controller.vhd
--- PROJECT     : TERMO (Wordle) – EEL480 Digital Systems
--- BOARD       : Digilent Spartan-3AN Starter Kit (XC3S700AN-FGG484)
--- DESCRIPTION : Top-level game FSM.  Orchestrates the full TERMO game loop:
+-- DESCRIPTION : Top-level game FSM.  Organizate the game loop:
 --
 --   1. Player 1 enters a 5-letter secret word (displayed as '*').
 --   2. Player 2 makes up to 6 guesses of 5 letters each.
@@ -12,8 +9,7 @@
 --        '-'  → WRONG     (letter not in word)
 --   4. Game ends with "YOU WIN!" or "GAME OVER!" message.
 --
---   LCD line layout during gameplay
---   ─────────────────────────────────────────────────────
+--   LCD line layout during gameplay:
 --   Line 1 (0x80): active word / guess  [16 chars]
 --   Line 2 (0xC0): status / feedback    [16 chars]
 --
@@ -21,14 +17,10 @@
 --   The states S_WR_CMD … S_WR_CHR_WL implement a reusable
 --   "write one string to LCD" sub-machine.  Any game state that
 --   needs to update the display sets the signals:
---       wr_cmd      – cursor-position command (sent as RS=0)
---       wr_len      – number of data characters (0 = command only)
+--       wr_cmd        – cursor-position command (sent as RS=0)
+--       wr_len        – number of data characters (0 = command only)
 --       wr_buf(0..15) – characters to write (RS=1)
---       ret_state   – state to enter once the write is complete
---   …and then transitions to S_WR_CMD.
---
--- CLK         : 50 MHz system clock
--- AUTHOR      : EEL480 Group
+--       ret_state     – state to enter once the write is complete and then transitions to S_WR_CMD.
 --------------------------------------------------------------------------------
 
 library ieee;
@@ -39,15 +31,15 @@ entity game_controller is
     port (
         clk          : in  std_logic;                    -- 50 MHz system clock
         rst          : in  std_logic;                    -- Active-high sync reset
-        -- ---- Keyboard interface (from ps2_keyboard) -------------------------
+        ------ Keyboard interface (from ps2_keyboard) -------------------------
         ascii_in     : in  std_logic_vector(7 downto 0); -- ASCII of last key
         key_valid    : in  std_logic;                    -- '1' for one clock on key
-        -- ---- LCD interface (to lcd_controller) -----------------------------
+        ------ LCD interface (to lcd_controller) -----------------------------
         lcd_char_out : out std_logic_vector(7 downto 0); -- Byte to send to LCD
         lcd_rs_out   : out std_logic;                    -- 0=cmd / 1=data
         lcd_send_out : out std_logic;                    -- One-clock send pulse
         lcd_busy     : in  std_logic;                    -- '1' while LCD is busy
-        -- ---- Word interface (to word_comparator) ---------------------------
+        ------ Word interface (to word_comparator) ---------------------------
         secret_out   : out std_logic_vector(39 downto 0); -- Packed secret word
         guess_out    : out std_logic_vector(39 downto 0); -- Packed current guess
         fb_in        : in  std_logic_vector(9 downto 0);  -- Comparator feedback
@@ -88,27 +80,27 @@ architecture rtl of game_controller is
         -- Initialisation
         S_INIT,
         -- Player-1 setup states (each lasts exactly one clock; see comments)
-        S_P1_WR_L2,        -- Setup: write P1 prompt to LCD line 2
-        S_P1_WR_L1,        -- Setup: write blank input area to line 1
+        S_P1_WR_L2,        -- Write P1 prompt to LCD line 2
+        S_P1_WR_L1,        -- Write blank input area to line 1
         S_P1_INPUT,        -- Wait for P1 key-presses
-        S_P1_ECHO,         -- Setup: echo '*' for the letter just entered
+        S_P1_ECHO,         -- Echo '*' for the letter just entered
         -- Player-2 setup states
-        S_P2_CLR,          -- Setup: clear display between attempts
-        S_P2_WR_L1,        -- Setup: write guess header to line 1
-        S_P2_WR_L2,        -- Setup: clear line 2
+        S_P2_CLR,          -- Clear display between attempts
+        S_P2_WR_L1,        -- Write guess header to line 1
+        S_P2_WR_L2,        -- Clear line 2
         S_P2_INPUT,        -- Wait for P2 key-presses
-        S_P2_ECHO,         -- Setup: echo the letter just entered
+        S_P2_ECHO,         -- Echo the letter just entered
         -- Comparison and result
         S_COMPARE,         -- Single-clock compare + feedback setup
-        S_WR_FEEDBACK,     -- Setup: write feedback to line 2
+        S_WR_FEEDBACK,     -- Write feedback to line 2
         S_CHECK_RESULT,    -- Single-clock win/lose decision
         S_WAIT_CONTINUE,   -- Wait for Enter before next attempt
         -- End-game states
-        S_WIN_WR_L1,       -- Setup: write "*** YOU WIN! ***" to line 1
-        S_WIN_WR_L2,       -- Setup: write attempt count to line 2
-        S_LOSE_WR_L1,      -- Setup: write "GAME OVER!!!    " to line 1
-        S_LOSE_WR_L2,      -- Setup: write "WORD: ABCDE     " to line 2
-        S_GAME_OVER,       -- Terminal state; wait for reset
+        S_WIN_WR_L1,       -- Write "*** YOU WIN! ***" to line 1
+        S_WIN_WR_L2,       -- Write attempt count to line 2
+        S_LOSE_WR_L1,      -- Write "GAME OVER!!!    " to line 1
+        S_LOSE_WR_L2,      -- Write "WORD: ABCDE     " to line 2
+        S_GAME_OVER,       -- Wait for reset
         -- ---- LCD write helper sub-states ------------------------------------
         -- Entry: set wr_cmd, wr_len, wr_buf(0..wr_len-1), ret_state
         -- then transition to S_WR_CMD.
@@ -149,7 +141,7 @@ architecture rtl of game_controller is
     signal led_lose_r : std_logic := '0';
 
     ---------------------------------------------------------------------------
-    -- Helper: convert integer 0..9 to ASCII digit '0'..'9'
+    -- Convert integer 0..9 to ASCII digit '0'..'9'
     ---------------------------------------------------------------------------
     function to_ascii_digit(n : integer range 0 to 9)
         return std_logic_vector is
@@ -158,7 +150,7 @@ architecture rtl of game_controller is
     end function;
 
     ---------------------------------------------------------------------------
-    -- Helper: convert 2-bit feedback code to display character
+    -- Convert 2-bit feedback code to display character
     ---------------------------------------------------------------------------
     function fb_char(fb : std_logic_vector(1 downto 0))
         return std_logic_vector is
