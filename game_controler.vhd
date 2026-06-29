@@ -7,7 +7,7 @@
 --        'O'  → CORRECT   (right letter, right position)
 --        '+'  → EXISTS    (right letter, wrong position)
 --        '-'  → WRONG     (letter not in word)
---   4. Game ends with "YOU WIN!" or "GAME OVER!" message.
+--   4. Game ends with "* VOCE GANOU! *" or "VOCE PERDEU!!!" message.
 --
 --   LCD line layout during gameplay:
 --   Line 1 (0x80): active word / guess  [16 chars]
@@ -213,25 +213,25 @@ begin
                     when S_INIT =>
                         if lcd_busy = '0' then
                             -- LCD ready; write P1 prompt to line 2
-                            -- "P1: ENTER WORD  "
+                            -- "INSIRA A PALAVRA"
                             wr_cmd     <= x"C0"; -- Line 2, position 0
                             wr_len     <= 16;
-                            wr_buf(0)  <= x"50"; -- P
-                            wr_buf(1)  <= x"31"; -- 1
-                            wr_buf(2)  <= x"3A"; -- :
-                            wr_buf(3)  <= ASCII_SPC;
-                            wr_buf(4)  <= x"45"; -- E
-                            wr_buf(5)  <= x"4E"; -- N
-                            wr_buf(6)  <= x"54"; -- T
-                            wr_buf(7)  <= x"45"; -- E
-                            wr_buf(8)  <= x"52"; -- R
-                            wr_buf(9)  <= ASCII_SPC;
-                            wr_buf(10) <= x"57"; -- W
-                            wr_buf(11) <= x"4F"; -- O
-                            wr_buf(12) <= x"52"; -- R
-                            wr_buf(13) <= x"44"; -- D
-                            wr_buf(14) <= ASCII_SPC;
-                            wr_buf(15) <= ASCII_SPC;
+                            wr_buf(0)  <= x"49"; -- I
+                            wr_buf(1)  <= x"4E"; -- N
+                            wr_buf(2)  <= x"53"; -- S
+                            wr_buf(3)  <= x"49"; -- I
+                            wr_buf(4)  <= x"52"; -- R
+                            wr_buf(5)  <= x"41"; -- A
+                            wr_buf(6)  <= ASCII_SPC; 
+                            wr_buf(7)  <= x"41"; -- A
+                            wr_buf(8)  <= ASCII_SPC;
+                            wr_buf(9)  <= x"50"; -- P
+                            wr_buf(10) <= x"41"; -- A
+                            wr_buf(11) <= x"4C"; -- L
+                            wr_buf(12) <= x"41"; -- A
+                            wr_buf(13) <= x"56"; -- V
+                            wr_buf(14) <= x"52"; -- R
+                            wr_buf(15) <= x"41"; -- A
                             ret_state  <= S_P1_WR_L1;
                             state      <= S_WR_CMD;
                         end if;
@@ -334,11 +334,11 @@ begin
                     when S_P2_WR_L1 =>
                         wr_cmd     <= x"80"; -- Line 1, position 0
                         wr_len     <= 16;
-                        wr_buf(0)  <= x"47"; -- G
-                        wr_buf(1)  <= x"55"; -- U
-                        wr_buf(2)  <= x"45"; -- E
-                        wr_buf(3)  <= x"53"; -- S
-                        wr_buf(4)  <= x"53"; -- S
+                        wr_buf(0)  <= x"43"; -- C
+                        wr_buf(1)  <= x"48"; -- H
+                        wr_buf(2)  <= x"55"; -- U
+                        wr_buf(3)  <= x"54"; -- T
+                        wr_buf(4)  <= x"45"; -- E
                         wr_buf(5)  <= ASCII_SPC;
                         wr_buf(6)  <= to_ascii_digit(attempt + 1); -- 1..6
                         wr_buf(7)  <= x"3A"; -- :
@@ -487,20 +487,20 @@ begin
                         wr_cmd     <= x"80"; -- Overwrite line 1
                         wr_len     <= 16;
                         wr_buf(0)  <= ASCII_STAR;
-                        wr_buf(1)  <= ASCII_STAR;
-                        wr_buf(2)  <= ASCII_STAR;
-                        wr_buf(3)  <= ASCII_SPC;
-                        wr_buf(4)  <= x"59"; -- Y
-                        wr_buf(5)  <= x"4F"; -- O
-                        wr_buf(6)  <= x"55"; -- U
-                        wr_buf(7)  <= ASCII_SPC;
-                        wr_buf(8)  <= x"57"; -- W
-                        wr_buf(9)  <= x"49"; -- I
-                        wr_buf(10) <= x"4E"; -- N
-                        wr_buf(11) <= x"21"; -- !
-                        wr_buf(12) <= ASCII_SPC;
-                        wr_buf(13) <= ASCII_STAR;
-                        wr_buf(14) <= ASCII_STAR;
+                        wr_buf(1)  <= ASCII_SPC;
+                        wr_buf(2)  <= x"56"; -- V
+                        wr_buf(3)  <= x"4F"; -- O
+                        wr_buf(4)  <= x"43"; -- C
+                        wr_buf(5)  <= x"45"; -- E
+                        wr_buf(6)  <= ASCII_SPC;
+                        wr_buf(7)  <= x"47"; -- G
+                        wr_buf(8)  <= x"41"; -- A
+                        wr_buf(9)  <= x"4E"; -- N
+                        wr_buf(10) <= x"48"; -- H
+                        wr_buf(11) <= x"4F"; -- O
+                        wr_buf(12) <= x"55"; -- U
+                        wr_buf(13) <= x"21"; -- !
+                        wr_buf(14) <= ASCII_SPC;
                         wr_buf(15) <= ASCII_STAR;
                         ret_state  <= S_WIN_WR_L2;
                         state      <= S_WR_CMD;
@@ -508,21 +508,21 @@ begin
                     when S_WIN_WR_L2 =>
                         wr_cmd     <= x"C0"; -- Overwrite line 2
                         wr_len     <= 16;
-                        wr_buf(0)  <= x"49"; -- I
-                        wr_buf(1)  <= x"4E"; -- N
-                        wr_buf(2)  <= ASCII_SPC;
-                        wr_buf(3)  <= to_ascii_digit(attempt); -- attempts used
-                        wr_buf(4)  <= ASCII_SPC;
-                        wr_buf(5)  <= x"41"; -- A
-                        wr_buf(6)  <= x"54"; -- T
-                        wr_buf(7)  <= x"54"; -- T
-                        wr_buf(8)  <= x"45"; -- E
-                        wr_buf(9)  <= x"4D"; -- M
-                        wr_buf(10) <= x"50"; -- P
-                        wr_buf(11) <= x"54"; -- T
+                        wr_buf(0)  <= ASCII_STAR;
+                        wr_buf(1)  <= x"45"; -- E
+                        wr_buf(2)  <= x"4D"; -- M
+                        wr_buf(3)  <= ASCII_SPC; 
+                        wr_buf(4)  <= to_ascii_digit(attempt); -- attempts used
+                        wr_buf(5)  <= ASCII_SPC;
+                        wr_buf(6)  <= x"43"; -- C
+                        wr_buf(7)  <= x"48"; -- H
+                        wr_buf(8)  <= x"55"; -- U
+                        wr_buf(9)  <= x"54"; -- T
+                        wr_buf(10) <= x"45"; -- E
+                        wr_buf(11) <= x"28"; -- (
                         wr_buf(12) <= x"53"; -- S
-                        wr_buf(13) <= ASCII_SPC;
-                        wr_buf(14) <= ASCII_SPC;
+                        wr_buf(13) <= x"29"; -- )
+                        wr_buf(14) <= ASCII_STAR;
                         wr_buf(15) <= ASCII_SPC;
                         ret_state  <= S_GAME_OVER;
                         state      <= S_WR_CMD;
@@ -535,20 +535,20 @@ begin
                     when S_LOSE_WR_L1 =>
                         wr_cmd     <= x"80";
                         wr_len     <= 16;
-                        wr_buf(0)  <= x"47"; -- G
-                        wr_buf(1)  <= x"41"; -- A
-                        wr_buf(2)  <= x"4D"; -- M
+                        wr_buf(0)  <= x"56"; -- V
+                        wr_buf(1)  <= x"4F"; -- O
+                        wr_buf(2)  <= x"43"; -- C
                         wr_buf(3)  <= x"45"; -- E
                         wr_buf(4)  <= ASCII_SPC;
-                        wr_buf(5)  <= x"4F"; -- O
-                        wr_buf(6)  <= x"56"; -- V
-                        wr_buf(7)  <= x"45"; -- E
-                        wr_buf(8)  <= x"52"; -- R
-                        wr_buf(9)  <= x"21"; -- !
-                        wr_buf(10) <= x"21"; -- !
+                        wr_buf(5)  <= x"50"; -- P
+                        wr_buf(6)  <= x"45"; -- E
+                        wr_buf(7)  <= x"52"; -- R
+                        wr_buf(8)  <= x"44"; -- D
+                        wr_buf(9)  <= x"45"; -- E
+                        wr_buf(10) <= x"55"; -- U
                         wr_buf(11) <= x"21"; -- !
-                        wr_buf(12) <= ASCII_SPC;
-                        wr_buf(13) <= ASCII_SPC;
+                        wr_buf(12) <= x"21"; -- !
+                        wr_buf(13) <= x"21"; -- !
                         wr_buf(14) <= ASCII_SPC;
                         wr_buf(15) <= ASCII_SPC;
                         ret_state  <= S_LOSE_WR_L2;
@@ -558,20 +558,20 @@ begin
                         -- Reveal the secret word on line 2
                         wr_cmd     <= x"C0";
                         wr_len     <= 16;
-                        wr_buf(0)  <= x"57"; -- W
-                        wr_buf(1)  <= x"4F"; -- O
-                        wr_buf(2)  <= x"52"; -- R
-                        wr_buf(3)  <= x"44"; -- D
-                        wr_buf(4)  <= x"3A"; -- :
-                        wr_buf(5)  <= ASCII_SPC;
-                        wr_buf(6)  <= secret(0); -- Actual letters
-                        wr_buf(7)  <= secret(1);
-                        wr_buf(8)  <= secret(2);
-                        wr_buf(9)  <= secret(3);
-                        wr_buf(10) <= secret(4);
-                        wr_buf(11) <= ASCII_SPC;
-                        wr_buf(12) <= ASCII_SPC;
-                        wr_buf(13) <= ASCII_SPC;
+                        wr_buf(0)  <= x"50"; -- P
+                        wr_buf(1)  <= x"41"; -- A
+                        wr_buf(2)  <= x"4C"; -- L
+                        wr_buf(3)  <= x"41"; -- A
+                        wr_buf(4)  <= x"56"; -- V
+                        wr_buf(5)  <= x"52"; -- R
+                        wr_buf(6)  <= x"41"; -- A
+                        wr_buf(7)  <= x"3A"; -- :
+                        wr_buf(8)  <= ASCII_SPC;
+                        wr_buf(9)  <= secret(0); 
+                        wr_buf(10) <= secret(1);
+                        wr_buf(11) <= secret(2);
+                        wr_buf(12) <= secret(3);
+                        wr_buf(13) <= secret(4);
                         wr_buf(14) <= ASCII_SPC;
                         wr_buf(15) <= ASCII_SPC;
                         ret_state  <= S_GAME_OVER;
@@ -595,7 +595,7 @@ begin
                     --================================================================
 
                     ----------------------------------------------------------------
-                    -- Step 1a : Send the cursor-position command
+                    -- Step 1 : Send the cursor-position command
                     ----------------------------------------------------------------
                     when S_WR_CMD =>
                         if lcd_busy = '0' then
@@ -625,7 +625,7 @@ begin
                         end if;
 
                     ----------------------------------------------------------------
-                    -- Step 2a : Send one data character at wr_buf(wr_pos)
+                    -- Step 2 : Send one data character at wr_buf(wr_pos)
                     ----------------------------------------------------------------
                     when S_WR_CHR =>
                         if lcd_busy = '0' then

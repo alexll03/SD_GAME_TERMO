@@ -130,7 +130,7 @@ begin
                         else timer <= timer + 1; end if;
 
                     ----------------------------------------------------------------
-                    -- WAKE-UP NIBBLE #1 : send nibble 0x3 then wait 4.1 ms
+                    -- NIBBLE #1 : send nibble 0x3 then wait 4.1 ms
                     ----------------------------------------------------------------
                     when ST_WU1_SETUP =>
                         lcd_rs_r <= '0'; lcd_db_r <= "0011";
@@ -152,7 +152,7 @@ begin
                         else timer <= timer + 1; end if;
 
                     ----------------------------------------------------------------
-                    -- WAKE-UP NIBBLE #2 : send nibble 0x3 then wait 100 µs
+                    -- NIBBLE #2 : send nibble 0x3 then wait 100 microseconds
                     ----------------------------------------------------------------
                     when ST_WU2_SETUP =>
                         lcd_rs_r <= '0'; lcd_db_r <= "0011";
@@ -174,7 +174,7 @@ begin
                         else timer <= timer + 1; end if;
 
                     ----------------------------------------------------------------
-                    -- WAKE-UP NIBBLE #3 : send nibble 0x3 then wait 100 µs
+                    -- NIBBLE #3 : send nibble 0x3 then wait 100 µs
                     ----------------------------------------------------------------
                     when ST_WU3_SETUP =>
                         lcd_rs_r <= '0'; lcd_db_r <= "0011";
@@ -196,7 +196,7 @@ begin
                         else timer <= timer + 1; end if;
 
                     ----------------------------------------------------------------
-                    -- SWITCH TO 4-BIT MODE : send nibble 0x2 then wait 100 µs
+                    -- SWITCH TO 4-BIT MODE : send nibble 0x2 then wait 100 microseconds
                     ----------------------------------------------------------------
                     when ST_4B_SETUP =>
                         lcd_rs_r <= '0'; lcd_db_r <= "0010";

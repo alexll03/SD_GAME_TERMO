@@ -1,4 +1,3 @@
- 
 --------------------------------------------------------------------------------
 -- DESCRIPTION : Purely combinational 5-letter word comparator.
 --               Given a secret word and a player guess (each 5 ASCII bytes),
